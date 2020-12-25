@@ -26,6 +26,7 @@ sidebar <- dashboardSidebar(
 )
 
 body <- dashboardBody(
+  customTheme,
   tabItems(
     tabItem(
       tabName = "home",
@@ -42,6 +43,8 @@ body <- dashboardBody(
         ),
         box(width = 3,
             height = 140,
+            title = "Input",
+            status = "primary",
             solidHeader = TRUE,
             sliderInput(inputId = "numbertopskor", 
                         label = "Jumlah Universitas", 
@@ -80,6 +83,7 @@ body <- dashboardBody(
         ),
         box(width = 4,
             title = "Input",
+            status = "warning",
             height = 300,
             solidHeader = TRUE,
             radioButtons(inputId = "skor", 
@@ -131,6 +135,7 @@ body <- dashboardBody(
         box(width = 3,
             title = tags$b("Input"),
             height = 610,
+            status = "primary",
             solidHeader = TRUE,
             tags$style("input[type=checkbox] {
                     transform: scale(5.8);
