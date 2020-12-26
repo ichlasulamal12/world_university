@@ -138,7 +138,7 @@ body <- dashboardBody(
             status = "primary",
             solidHeader = TRUE,
             tags$style("input[type=checkbox] {
-                    transform: scale(5.8);
+                    transform: scale(1.8);
            }"),
             tags$style("#mapinput {
                        font-size:16px;
