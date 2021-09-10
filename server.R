@@ -13,7 +13,7 @@ function(input,output){
                  y = reorder(University, Score_Result),
                  text = text
                  )) +
-      geom_col(fill = "#212ca6") +
+      geom_col(aes(fill = Score_Result), show.legend = FALSE) +
       labs(x = NULL,
            y = NULL,
            title = "Peringkat Universitas Terbaik Dunia 2020") +
@@ -35,11 +35,13 @@ function(input,output){
       ggplot(aes(x = value,
                  y = reorder(Country, value),
                  text = text)) + 
-      geom_col(fill = "#e31445") +
+      geom_col(aes(fill = value)) +
+      scale_fill_gradient(name = "Value", low = "blue", high = "red") +
       labs(x = NULL,
            y = NULL,
            title = "Negara berdasarkan Jumlah Universitas Terbaik Dunia") +
-      theme_CPDV
+      theme_CPDV +
+      theme(legend.position = "none")
     
     ggplotly(plot_topcountry, tooltip = "text")
   })
@@ -137,9 +139,9 @@ function(input,output){
   })
   
   output$numberstudent <- renderPlotly({
-    top_numbstudent <- univ_rank_cat %>% 
+    top_numbstudent <- univ_rank %>% 
       slice(1:input$numberuniversity) %>% 
-      select(Score_Rank, University, Number_students) %>% 
+      select(Score_Rank, University, Number_students, Categoric) %>% 
       mutate(text = paste0("Universitas: ", University, "<br>",
                            "Peringkat: ", Score_Rank, "<br>",
                            "Jumlah Mahasiswa: ", Number_students))
@@ -148,11 +150,13 @@ function(input,output){
       ggplot(aes(x = Number_students,
                  y = reorder(University, desc(Score_Rank)),
                  text = text)) +
-      geom_col(fill = "#d4340d") +
+      geom_col(aes(fill = Categoric)) +
+      facet_grid(Categoric ~ ., scales = "free") +
       labs(x = NULL,
            y = NULL,
            title = "Jumlah Mahasiswa Universitas Terbaik Dunia") +
-      theme_CPDV
+      theme_CPDV +
+      theme(legend.position = "none")
     
     ggplotly(plot_top_numb, tooltip = "text")
   })
@@ -203,6 +207,10 @@ function(input,output){
                          breaks = seq(0, 18, 3)) +
       geom_hline(yintercept = median(univ_rank$Numb_students_per_Staff), linetype = 2, 
                  size = 1, col = "white") +
+      geom_text(aes(1.3, median(univ_rank$Numb_students_per_Staff) + 0.5, 
+                    label = "Nilai Median"),
+                color = "white",
+                size = 4) +
       labs(x = NULL,
            y = NULL,
            title = "Rasio Mahasiswa per Staf Berdasarkan Peringkat Universitas") +
@@ -227,7 +235,7 @@ function(input,output){
     
     m <- univ_rank_leaf %>%
       leaflet() %>% 
-      addProviderTiles("Esri") %>% 
+      addProviderTiles(providers$OpenStreetMap) %>% 
       setView(lat=10, lng=0 , zoom=2) %>% 
       addMarkers(label = ~University,
                  popup = popup_univ,
